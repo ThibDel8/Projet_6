@@ -5,6 +5,7 @@ body {
     color: #4c3048;
     display: flex;
     flex-direction: column;
+    cursor: default;
 }
 
 header {
@@ -18,7 +19,7 @@ header {
 
 #logo {
     margin-left: 20px;
-    width: 70%;
+    width: 60%;
     height: 100%;
 }
 
@@ -27,7 +28,7 @@ header {
 }
 
 nav {
-    width: 30%;
+    width: 40%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -52,15 +53,17 @@ nav ul li a:hover {
     color: #4c3048;
 }
 
-nav ul li a.active {
-    color: orange;
-}
-
 main {
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-grow: 1;
+}
+
+.mb-3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
@@ -83,6 +86,12 @@ h1 {
     align-items: center;
     border: 2px solid #4c3048;
     background-color: white;
+}
+
+#photo_profil {
+    height: 150px;
+    border: 1px solid black;
+    border-radius: 50%;
 }
 
 .label_input {
@@ -117,9 +126,12 @@ button:hover {
 
 .login_link {
     color: #4c3048;
-    font-size: 0.8rem;
+    font-size: 0.6rem;
 }
 
 footer {
+    padding-left: 80px;
+    font-size: 0.8rem;
     background-color: #6c495f;
+    color: #5580a9;
 }

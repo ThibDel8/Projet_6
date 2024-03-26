@@ -46,6 +46,66 @@ class Figure
         $this->medias = new ArrayCollection();
     }
 
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
+    public function getCommentaires(): Collection
+    {
+        return $this->commentaires;
+    }
+
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
+    public function addCommentaire(Comment $commentaire): static
+    {
+        if (!$this->commentaires->contains($commentaire)) {
+            $this->commentaires->add($commentaire);
+            $commentaire->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
+    public function removeCommentaire(Comment $commentaire): static
+    {
+        if ($this->commentaires->removeElement($commentaire)) {
+            // set the owning side to null (unless already changed)
+            if ($commentaire->getFigure() === $this) {
+                $commentaire->setFigure(null);
+            }
+        }
+
+        return $this;
+    }
+
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
+    public function getMedias(): Collection
+    {
+        return $this->medias;
+    }
+
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
+    public function addMedia(Media $media): static
+    {
+        if (!$this->medias->contains($media)) {
+            $this->medias->add($media);
+            $media->setFigure($this);
+        }
+
+        return $this;
+    }
+
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
+    public function removeMedia(Media $media): static
+    {
+        if ($this->medias->removeElement($media)) {
+            // set the owning side to null (unless already changed)
+            if ($media->getFigure() === $this) {
+                $media->setFigure(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,66 +179,6 @@ class Figure
     public function setDateMaj(?string $date_maj): static
     {
         $this->date_maj = $date_maj;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Comment>
-     */
-    public function getCommentaires(): Collection
-    {
-        return $this->commentaires;
-    }
-
-    public function addCommentaire(Comment $commentaire): static
-    {
-        if (!$this->commentaires->contains($commentaire)) {
-            $this->commentaires->add($commentaire);
-            $commentaire->setFigure($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommentaire(Comment $commentaire): static
-    {
-        if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
-            if ($commentaire->getFigure() === $this) {
-                $commentaire->setFigure(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Media>
-     */
-    public function getMedias(): Collection
-    {
-        return $this->medias;
-    }
-
-    public function addMedia(Media $media): static
-    {
-        if (!$this->medias->contains($media)) {
-            $this->medias->add($media);
-            $media->setFigure($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMedia(Media $media): static
-    {
-        if ($this->medias->removeElement($media)) {
-            // set the owning side to null (unless already changed)
-            if ($media->getFigure() === $this) {
-                $media->setFigure(null);
-            }
-        }
 
         return $this;
     }

@@ -19,6 +19,9 @@ class Media
     #[ORM\Column(length: 150, nullable: true)]
     private ?string $url_image = null;
 
+    #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'medias')]
+    private ?Figure $figure = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Media
     public function setUrlImage(?string $url_image): static
     {
         $this->url_image = $url_image;
+
+        return $this;
+    }
+
+    public function getFigure(): ?Figure
+    {
+        return $this->figure;
+    }
+
+    public function setFigure(?Figure $figure): static
+    {
+        $this->figure = $figure;
 
         return $this;
     }
