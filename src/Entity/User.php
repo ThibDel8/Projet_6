@@ -21,10 +21,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $nom = null;
+    private ?string $username = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $prenom = null;
+    #[ORM\Column(length: 255)]
+    private ?string $url_photo_profil = null;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
@@ -51,26 +51,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getUsername(): ?string
     {
-        return $this->nom;
+        return $this->username;
     }
 
-    public function setNom(string $nom): static
+    public function setUsername(string $username): static
     {
-        $this->nom = $nom;
+        $this->username = $username;
 
         return $this;
     }
 
-    public function getPrenom(): ?string
+    public function getUrlPhotoProfil(): ?string
     {
-        return $this->prenom;
+        return $this->url_photo_profil;
     }
 
-    public function setPrenom(string $prenom): static
+    public function setUrlPhotoProfil(string $url_photo_profil): static
     {
-        $this->prenom = $prenom;
+        $this->url_photo_profil = $url_photo_profil;
 
         return $this;
     }

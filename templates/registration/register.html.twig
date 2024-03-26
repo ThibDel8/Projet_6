@@ -5,17 +5,13 @@
 {% block main %}
     <div id="registration">
 
-        <h1>Je créé mon compte</h1>
+        <h1>Je crée mon compte</h1>
 
         {{ form_errors(registrationForm) }}
 
         {{ form_start(registrationForm) }}
-            {{ form_row(registrationForm.nom, {
-                label: 'Nom',
-                'row_attr': {'class': 'label_input'}})
-                }}<br>
-            {{ form_row(registrationForm.prenom, {
-                label: 'Prénom',
+            {{ form_row(registrationForm.username, {
+                label: 'Nom d\'utilisateur',
                 'row_attr': {'class': 'label_input'}})
                 }}<br>
             {{ form_row(registrationForm.email, {

@@ -88,6 +88,12 @@ h1 {
     background-color: white;
 }
 
+#photo_profil {
+    height: 150px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+
 .label_input {
     width: 100%;
     display: flex;
