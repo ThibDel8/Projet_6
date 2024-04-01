@@ -47,4 +47,19 @@ class FigureController extends AbstractController
             'FigureForm' => $form,
         ]);
     }
+
+    #[Route('/figure/{id}', name: 'app_figure_details')]
+    public function show($id, EntityManagerInterface $entityManager): Response
+    {
+
+        $figure = $entityManager->getRepository(Figure::class)->find($id);
+
+        if (!$figure) {
+            throw $this->createNotFoundException('Figure non trouvée');
+        }
+
+        return $this->render('figure/show.html.twig', [
+            'figure' => $figure,
+        ]);
+    }
 }

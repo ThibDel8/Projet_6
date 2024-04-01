@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ figure.nom }}{% endblock %}
+
+{% block main %}
+
+    <div id="figure_details">
+        <div id="figure_header">
+            <div id="figure_option"><a href="#">Modifier</a><a href="#">Supprimer</a></div>
+            <h1>{{ figure.nom }}</h1>
+        </div>
+        <div id="figure_medias">Medias</div>
+        <div id="figure_text">
+            <p>Texte<p>
+            <div id="figure_informations">infos de l'article</div>
+        </div>
+        <form>
+            <input type="text">
+            <button>Envoyer</button>
+        </form>
+        <div id="figure_comments">Liste des commentaires</div>
+    </div>
+
+
+{% endblock %}
