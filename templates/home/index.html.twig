@@ -3,5 +3,22 @@
 {% block title %}Accueil{% endblock %}
 
 {% block main %}
-    <h1>Bienvenue !</h1>
+
+    <section id="home_accroche">
+        <h1>Bienvenue !</h1>
+    </section>
+
+    <section id="tricks_list">
+        {% if app.user %}
+        <a id="plus_link" href="{{ path('app_create_figure') }}" title="Créer une nouvelle figure"><div id="add_figure">
+            <div id="plus"><p>+</p></div>
+        </div></a>
+        {% endif %}
+        {% for figure in figures %}
+        <a class="trick_link" href="{{ path('app_home', {'id': figure.id } ) }}" title="{{ figure.groupe }}"><div class="read_trick" style="background-image: url('image_snowboard.jpg');">
+            <h2>{{ figure.nom }}</h2>
+        </div></a>
+        {% endfor %}
+    </section>
+
 {% endblock %}
