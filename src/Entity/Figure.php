@@ -34,7 +34,7 @@ class Figure
     #[ORM\Column(length: 19, nullable: true)]
     private ?string $date_maj = null;
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'figure')]
     private Collection $commentaires;
 
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
@@ -46,13 +46,14 @@ class Figure
         $this->medias = new ArrayCollection();
     }
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
+    /**
+     * @return Collection<int, Comment>
+     */
     public function getCommentaires(): Collection
     {
         return $this->commentaires;
     }
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
     public function addCommentaire(Comment $commentaire): static
     {
         if (!$this->commentaires->contains($commentaire)) {
@@ -63,7 +64,6 @@ class Figure
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'Figure')]
     public function removeCommentaire(Comment $commentaire): static
     {
         if ($this->commentaires->removeElement($commentaire)) {
@@ -76,13 +76,14 @@ class Figure
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
+    /**
+     * @return Collection<int, Media>
+     */
     public function getMedias(): Collection
     {
         return $this->medias;
     }
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
     public function addMedia(Media $media): static
     {
         if (!$this->medias->contains($media)) {
@@ -93,7 +94,6 @@ class Figure
         return $this;
     }
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
     public function removeMedia(Media $media): static
     {
         if ($this->medias->removeElement($media)) {

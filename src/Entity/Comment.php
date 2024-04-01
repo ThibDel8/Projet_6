@@ -20,12 +20,12 @@ class Comment
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'commentaires')]
     private ?Figure $figure = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commentaires')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'commentaires')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $auteur = null;
+    private ?User $username = null;
 
     public function getId(): ?int
     {
@@ -68,14 +68,14 @@ class Comment
         return $this;
     }
 
-    public function getAuteur(): ?User
+    public function getUsername(): ?User
     {
-        return $this->auteur;
+        return $this->username;
     }
 
-    public function setAuteur(?User $auteur): static
+    public function setUsername(?User $username): static
     {
-        $this->auteur = $auteur;
+        $this->username = $username;
 
         return $this;
     }

@@ -1,8 +1,8 @@
-<a id="logo" href="#"><img src="logo.png" title="Accueil" alt="Logo du site SnowTricks"></a>
+<a id="logo" href="{{ path('app_home') }}"><img src="logo.png" title="Accueil" alt="Logo du site SnowTricks"></a>
 <nav>
     <ul>
         <li><a href="{{ path('app_home') }}">Accueil</a></li>|
-        <li><a href="#">Ajouter une figure</a></li>|
+        <li><a href="{{ path('app_create_figure') }}">Ajouter une figure</a></li>|
         {% if app.user %}
                 <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
         {% else %}
