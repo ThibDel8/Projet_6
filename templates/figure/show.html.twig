@@ -14,12 +14,42 @@
             <p>Texte<p>
             <div id="figure_informations">infos de l'article</div>
         </div>
-        <form>
-            <input type="text">
-            <button>Envoyer</button>
+        {% if app.user %}
+        {% set figureId = app.request.attributes.get('id') %}
+        <form id="comment_form" action="{{ path('app_figure_comment', {'id': figureId }) }}" method="post">
+            <label for="comment"></label>
+            <input type="text" id="comment" name="comment">
+            <button type="submit">Envoyer un commentaire</button>
         </form>
-        <div id="figure_comments">Liste des commentaires</div>
+        {% endif %}
+        <div id="figure_comments">
+        {% if comments is not empty %}
+            {% for comment in comments %}
+                <div class="comment {{ loop.index > 4 ? "hidden" : "" }}">
+                    <img src="/default_profile.jpg">
+                    <p title="Écrit par {{ comment.getUsername.username }} le {{ comment.date|date("l j F Y à G:i")|replace({'January': 'Janvier', 'February': 'Février', 'March': 'Mars', 'April': 'Avril', 'May': 'Mai', 'June': 'Juin', 'July': 'Juillet', 'August': 'Août', 'September': 'Septembre', 'October': 'Octobre', 'November': 'Novembre', 'December': 'Décembre', 'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi', 'Sunday': 'Dimanche'}) }}">{{ comment.commentaire }}</p>
+                </div>
+            {% endfor %}
+                {% if comments|length > 4 %}
+                    <span id="load_more">Afficher plus</span>
+                {% endif %}
+        {% else %}
+            <p>Cette figure de snowboard n'a pas encore été commentée.</p>
+        {% endif %}
+        </div>
     </div>
 
 
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        document.getElementById("load_more").addEventListener("click", ()=> {
+            const comments = document.querySelectorAll(".comment.hidden")
+            comments.forEach((comment)=>{
+                comment.classList.remove("hidden")
+            })
+        })
+    </script>
 {% endblock %}

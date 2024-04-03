@@ -17,8 +17,8 @@ class Comment
     #[ORM\Column(type: Types::TEXT)]
     private ?string $commentaire = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $date = null;
 
     #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'commentaires')]
     private ?Figure $figure = null;
@@ -44,12 +44,12 @@ class Comment
         return $this;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDate(): ?string
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): static
+    public function setDate(string $date): static
     {
         $this->date = $date;
 

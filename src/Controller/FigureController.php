@@ -58,8 +58,11 @@ class FigureController extends AbstractController
             throw $this->createNotFoundException('Figure non trouvée');
         }
 
+        $comments = $figure->getCommentaires();
+
         return $this->render('figure/show.html.twig', [
             'figure' => $figure,
+            'comments' => $comments,
         ]);
     }
 }

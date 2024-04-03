@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <title>{% block title %}SnowTricks{% endblock %}</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Sniglet:wght@400;800&display=swap">
-        <link rel="icon" href="favicon.ico">
+        <link rel="icon" href="/favicon.ico">
         {% block stylesheets %}
         <link rel="stylesheet" href="assets/styles/app.css">
         {% endblock %}
@@ -23,5 +23,7 @@
         <footer>
             {% include "footer.html.twig" %}
         </footer>
+        {% block script %}
+        {% endblock %}
     </body>
 </html>
