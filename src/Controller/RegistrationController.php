@@ -43,8 +43,8 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $now = new DateTime('now');
-            $user->setDateInscription($now->format("d/m/Y"));
+            $now = new \DateTime();
+            $user->setDateInscription($now->format('Y-m-d H:i:s'));
 
             $user->setUrlPhotoProfil('default_profile.jpg');
             $entityManager->persist($user);
@@ -97,6 +97,6 @@ class RegistrationController extends AbstractController
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('app_register');
+        return $this->redirectToRoute('app_login');
     }
 }
