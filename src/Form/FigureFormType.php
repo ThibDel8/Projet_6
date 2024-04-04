@@ -4,10 +4,12 @@ namespace App\Form;
 
 use App\Entity\Figure;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FigureFormType extends AbstractType
 {
@@ -15,7 +17,10 @@ class FigureFormType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class, [
-                'label' => 'Nom de la figure'
+                'label' => 'Nom de la figure',
+                'constraints' => [
+                    new NotBlank(),
+                ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Déscription'

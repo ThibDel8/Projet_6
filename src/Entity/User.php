@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -24,22 +26,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $username = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $url_photo_profil = null;
+    private ?string $urlPhotoProfil = null;
 
     #[ORM\Column(type: 'json')]
     private $roles = [];
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateInscription = null;
+
+    #[ORM\Column(length: 72)]
+    private ?string $password = null;
+
     #[ORM\Column(length: 100)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 72)]
-    private ?string $mot_de_passe = null;
-
-    #[ORM\Column(length: 19)]
-    private ?string $date_inscription = null;
-
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'username', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $commentaires;
+
+    #[ORM\OneToMany(targetEntity: Figure::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $figures;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
@@ -47,6 +52,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
+        $this->figures = new ArrayCollection();
+        $this->dateInscription = new DateTime();
     }
 
     public function getId(): ?int
@@ -75,12 +82,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUrlPhotoProfil(): ?string
     {
-        return $this->url_photo_profil;
+        return $this->urlPhotoProfil;
     }
 
-    public function setUrlPhotoProfil(string $url_photo_profil): static
+    public function setUrlPhotoProfil(string $urlPhotoProfil): static
     {
-        $this->url_photo_profil = $url_photo_profil;
+        $this->urlPhotoProfil = $urlPhotoProfil;
 
         return $this;
     }
@@ -97,30 +104,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getMotDePasse(): ?string
-    {
-        return $this->mot_de_passe;
-    }
-
-    public function setMotDePasse(string $mot_de_passe): static
-    {
-        $this->mot_de_passe = $mot_de_passe;
-
-        return $this;
-    }
-
-    public function getDateInscription(): ?string
-    {
-        return $this->date_inscription;
-    }
-
-    public function setDateInscription(string $date_inscription): static
-    {
-        $this->date_inscription = $date_inscription;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Comment>
      */
@@ -133,7 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->commentaires->contains($commentaire)) {
             $this->commentaires->add($commentaire);
-            $commentaire->setUsername($this);
+            $commentaire->setUser($this);
         }
 
         return $this;
@@ -143,8 +126,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->commentaires->removeElement($commentaire)) {
             // set the owning side to null (unless already changed)
-            if ($commentaire->getUsername() === $this) {
-                $commentaire->setUsername(null);
+            if ($commentaire->getUser() === $this) {
+                $commentaire->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Figure>
+     */
+    public function getFigures(): Collection
+    {
+        return $this->figures;
+    }
+
+    public function addFigure(Figure $figure): static
+    {
+        if (!$this->figures->contains($figure)) {
+            $this->figures->add($figure);
+            $figure->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFigure(Figure $figure): static
+    {
+        if ($this->figures->removeElement($figure)) {
+            // set the owning side to null (unless already changed)
+            if ($figure->getUser() === $this) {
+                $figure->setUser(null);
             }
         }
 
@@ -153,12 +166,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPassword(): ?string
     {
-        return $this->mot_de_passe;
+        return $this->password;
     }
 
-    public function setPassword(string $mot_de_passe): self
+    public function setPassword(string $password): self
     {
-        $this->mot_de_passe = $mot_de_passe;
+        $this->password = $password;
 
         return $this;
     }
@@ -198,6 +211,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getDateInscription(): ?\DateTimeInterface
+    {
+        return $this->dateInscription;
+    }
+
+    public function setDateInscription(\DateTimeInterface $dateInscription): static
+    {
+        $this->dateInscription = $dateInscription;
 
         return $this;
     }

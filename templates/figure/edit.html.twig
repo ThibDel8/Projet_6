@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une figure{% endblock %}
+
+{% block main %}
+
+<div id="registration">
+
+    <h1>Modification de la figure</h1>
+
+        {{ form_errors(FigureForm) }}
+
+        {{ form_start(FigureForm) }}
+            {{ form_row(FigureForm.nom, {
+                label: 'Nom de la figure',
+                'row_attr': {'class': 'label_input'}})
+                }}<br>
+            {{ form_row(FigureForm.description, {
+                label: 'Déscription',
+                'row_attr': {'class': 'label_input'}})
+                }}<br>
+            {{ form_row(FigureForm.groupe, {
+                label: 'Groupe de la figure',
+                'row_attr': {'class': 'label_input'}})
+                }}<br>
+
+            <button type="submit" class="btn">Modifier la figure</button>
+
+        {{ form_end(FigureForm) }}
+    
+</div>
+{% endblock %}

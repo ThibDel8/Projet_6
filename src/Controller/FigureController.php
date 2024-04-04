@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Figure;
+use App\Entity\User;
 use App\Form\FigureFormType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,12 +29,8 @@ class FigureController extends AbstractController
              * @var User $user 
              */
             $user = $security->getUser();
-            $userId = $user->getId();
 
-            $figure->setUserId($userId);
-
-            $now = new DateTime('now');
-            $figure->setDateCreation($now->format("d/m/Y"));
+            $figure->setUser($user);
 
             $entityManager->persist($figure);
             $entityManager->flush();
@@ -64,5 +61,36 @@ class FigureController extends AbstractController
             'figure' => $figure,
             'comments' => $comments,
         ]);
+    }
+
+    #[Route('/figure/{id}/edit', name: 'app_figure_edit')]
+    public function edit($id, Request $request, Figure $figure, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(FigureFormType::class, $figure);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $now = new DateTime('now');
+            $figure->setDateMaj($now);
+
+            $entityManager->persist($figure);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_figure_details', ['id' => $id]);
+        }
+
+        return $this->render('figure/edit.html.twig', [
+            'FigureForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/figure/{id}/delete', name: 'app_figure_delete')]
+    public function delete($id, Figure $figure, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($figure);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_home');
     }
 }
