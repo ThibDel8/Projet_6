@@ -27,7 +27,7 @@
             {% for comment in comments %}
                 <div class="comment {{ loop.index > 4 ? "hidden" : "" }}">
                     <img src="/default_profile.jpg">
-                    <p title="Écrit par {{ comment.getUsername.username }} le {{ comment.date|date("l j F Y à G:i")|replace({'January': 'Janvier', 'February': 'Février', 'March': 'Mars', 'April': 'Avril', 'May': 'Mai', 'June': 'Juin', 'July': 'Juillet', 'August': 'Août', 'September': 'Septembre', 'October': 'Octobre', 'November': 'Novembre', 'December': 'Décembre', 'Monday': 'Lundi', 'Tuesday': 'Mardi', 'Wednesday': 'Mercredi', 'Thursday': 'Jeudi', 'Friday': 'Vendredi', 'Saturday': 'Samedi', 'Sunday': 'Dimanche'}) }}">{{ comment.commentaire }}</p>
+                    <p title="Écrit par {{ comment.getUsername.username }} le {{ comment.date|format_datetime('full', 'short') }}">{{ comment.commentaire }}</p>
                 </div>
             {% endfor %}
                 {% if comments|length > 4 %}
