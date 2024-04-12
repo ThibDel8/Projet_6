@@ -29,9 +29,8 @@ class CommentController extends AbstractController
 
         $comment = new Comment();
         $comment->setCommentaire($commentText);
-        $comment->setDate($now->format('Y-m-d H:i:s'));
         $comment->setFigure($figure);
-        $comment->setUsername($user);
+        $comment->setUser($user);
 
         $entityManager->persist($comment);
         $entityManager->flush();

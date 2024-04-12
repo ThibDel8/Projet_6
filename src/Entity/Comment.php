@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,15 +18,20 @@ class Comment
     #[ORM\Column(type: Types::TEXT)]
     private ?string $commentaire = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    private ?string $date = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'commentaires')]
     private ?Figure $figure = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'commentaires')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $username = null;
+    private ?User $user = null;
+
+    public function __construct()
+    {
+        $this->date = new DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -44,12 +50,12 @@ class Comment
         return $this;
     }
 
-    public function getDate(): ?string
+    public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(string $date): static
+    public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
 
@@ -68,14 +74,14 @@ class Comment
         return $this;
     }
 
-    public function getUsername(): ?User
+    public function getUser(): ?User
     {
-        return $this->username;
+        return $this->user;
     }
 
-    public function setUsername(?User $username): static
+    public function setUser(?User $user): static
     {
-        $this->username = $username;
+        $this->user = $user;
 
         return $this;
     }

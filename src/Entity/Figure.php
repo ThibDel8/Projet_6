@@ -3,12 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\FigureRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: FigureRepository::class)]
+#[UniqueEntity(fields: ['nom'], message: 'Il y a déjà une figure qui existe avec ce nom.')]
+#[UniqueEntity(fields: ['slug'], errorPath: 'nom', message: 'Il y a déjà une figure qui existe avec ce nom.')]
 class Figure
 {
     #[ORM\Id]
@@ -25,25 +30,29 @@ class Figure
     #[ORM\Column(length: 100)]
     private ?string $groupe = null;
 
-    #[ORM\Column]
-    private ?int $user_id = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateMaj = null;
 
-    #[ORM\Column(length: 19)]
-    private ?string $date_creation = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateCreation = null;
 
-    #[ORM\Column(length: 19, nullable: true)]
-    private ?string $date_maj = null;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'figures')]
+    private ?User $user = null;
 
-    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'figure')]
+    #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'figure', orphanRemoval: true)]
     private Collection $commentaires;
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true, cascade: ['persist'])]
     private Collection $medias;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
 
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
         $this->medias = new ArrayCollection();
+        $this->dateCreation = new DateTime('now');
     }
 
     /**
@@ -116,9 +125,10 @@ class Figure
         return $this->nom;
     }
 
-    public function setNom(string $nom): static
+    public function setNom(?string $nom): static
     {
         $this->nom = $nom;
+        $this->slug = mb_strtolower((new AsciiSlugger('fr'))->slug($nom));
 
         return $this;
     }
@@ -128,7 +138,7 @@ class Figure
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -147,38 +157,50 @@ class Figure
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(int $user_id): static
+    public function setUser(?User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getDateCreation(): ?string
+    public function getDateMaj(): ?\DateTimeInterface
     {
-        return $this->date_creation;
+        return $this->dateMaj;
     }
 
-    public function setDateCreation(string $date_creation): static
+    public function setDateMaj(?\DateTimeInterface $dateMaj): static
     {
-        $this->date_creation = $date_creation;
+        $this->dateMaj = $dateMaj;
 
         return $this;
     }
 
-    public function getDateMaj(): ?string
+    public function getDateCreation(): ?\DateTimeInterface
     {
-        return $this->date_maj;
+        return $this->dateCreation;
     }
 
-    public function setDateMaj(?string $date_maj): static
+    public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
-        $this->date_maj = $date_maj;
+        $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }

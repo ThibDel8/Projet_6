@@ -43,9 +43,6 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $now = new \DateTime();
-            $user->setDateInscription($now->format('Y-m-d H:i:s'));
-
             $user->setUrlPhotoProfil('default_profile.jpg');
             $entityManager->persist($user);
             $entityManager->flush();

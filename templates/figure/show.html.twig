@@ -3,19 +3,40 @@
 {% block title %}{{ figure.nom }}{% endblock %}
 
 {% block main %}
+        {% set figureId = app.request.attributes.get('id') %}
 
     <div id="figure_details">
         <div id="figure_header">
-            <div id="figure_option"><a href="#">Modifier</a><a href="#">Supprimer</a></div>
+        {% if is_granted('ROLE_USER') %}
+            <div id="figure_option"><a href="{{ path('app_figure_edit', {'id': figureId }) }}">Modifier</a><a href="{{ path('app_figure_delete', {'id': figureId }) }}">Supprimer</a></div>
+        {% endif %}
             <h1>{{ figure.nom }}</h1>
         </div>
-        <div id="figure_medias">Medias</div>
+        <div id="figure_medias">
+        {% for image in images %}
+        <div class="image_media"><img src="{{ asset('medias/'~image.urlMedia) }}">
+        {% if is_granted('ROLE_USER') %}
+
+        {% endif %}
+        </div>
+        {% endfor %}
+        {% for video in videos %}
+        <div class="image_media"><embed src="{{ asset('medias/'~video.urlMedia) }}">
+        {% if is_granted('ROLE_USER') %}
+        {% endif %}
+        </div>
+        {% endfor %}
+        </div>
         <div id="figure_text">
-            <p>Texte<p>
-            <div id="figure_informations">infos de l'article</div>
+            <p>{{ figure.description }}<p>
+            <div id="figure_informations">
+                <div>Groupe : {{ figure.groupe }}</div>
+                <div>Créé le : {{ figure.dateCreation|format_datetime('full', 'short') }}</div>
+                {% if figure.dateMaj is not null %}<div>Modifié le : {{ figure.dateMaj|format_datetime('full', 'short') }}</div>{% endif %}
+                <div>Rédigé par : {{ figure.user.username }}</div>
+                </div>
         </div>
         {% if app.user %}
-        {% set figureId = app.request.attributes.get('id') %}
         <form id="comment_form" action="{{ path('app_figure_comment', {'id': figureId }) }}" method="post">
             <label for="comment"></label>
             <input type="text" id="comment" name="comment">
@@ -27,7 +48,7 @@
             {% for comment in comments %}
                 <div class="comment {{ loop.index > 4 ? "hidden" : "" }}">
                     <img src="/default_profile.jpg">
-                    <p title="Écrit par {{ comment.getUsername.username }} le {{ comment.date|format_datetime('full', 'short') }}">{{ comment.commentaire }}</p>
+                    <p title="Écrit par {{ comment.user.username }} le {{ comment.date|format_datetime('full', 'short') }}">{{ comment.commentaire }}</p>
                 </div>
             {% endfor %}
                 {% if comments|length > 4 %}

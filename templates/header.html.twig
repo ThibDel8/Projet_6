@@ -2,7 +2,7 @@
 <nav>
     <ul>
         <li><a href="{{ path('app_home') }}">Accueil</a></li>|
-        <li><a href="{{ path('app_create_figure') }}">Ajouter une figure</a></li>|
+        <li><a href="{{ path('app_home') }}#tricks_list">Figures</a></li>|
         {% if app.user %}
                 <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
         {% else %}
