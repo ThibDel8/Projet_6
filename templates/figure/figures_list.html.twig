@@ -1,10 +1,16 @@
 {% if app.user %}
-        <a id="plus_link" href="{{ path('app_create_figure') }}" title="Créer une nouvelle figure"><div id="add_figure">
-            <div id="plus"><p>+</p></div>
-        </div></a>
-        {% endif %}
-        {% for figure in figures %}
-        <a class="trick_link" href="{{ path('app_figure_details', {'id': figure.id } ) }}" title="{{ figure.groupe }}"><div class="read_trick" style="background-image: url('image_snowboard.jpg');">
-            <h2>{{ figure.nom }}</h2>
-        </div></a>
-        {% endfor %}
+    <a id="plus_link" href="{{ path('app_create_figure') }}" title="Créer une nouvelle figure"><div id="add_figure">
+        <div id="plus"><p>+</p></div>
+    </div></a>
+{% endif %}
+
+{% for figure in figures %}
+    {% if imagesByFigure[figure.id] is defined %}
+        {% set image = imagesByFigure[figure.id] %}
+        <a class="trick_link" href="{{ path('app_figure_details', {'slug': figure.slug } ) }}" title="{{ figure.groupe }}">
+            <div class="read_trick" style="background-image: url('medias/{{ image.urlMedia }}');">
+                <h2>{{ figure.nom }}</h2>
+            </div>
+        </a>
+    {% endif %}
+{% endfor %}

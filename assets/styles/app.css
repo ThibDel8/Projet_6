@@ -66,6 +66,16 @@ main {
     align-items: center;
 }
 
+#home_accroche {
+    height: calc(100vh - 100px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 h1 {
     text-align: center;
     font-weight: normal;
@@ -168,11 +178,19 @@ h1 {
     align-items: center;
 }
 
+.label_input ul {
+    color: red;
+}
+
 input,
 textarea {
     border: none;
     border-bottom: 2px solid #000;
     outline: none;
+}
+
+input[type="file"] {
+    border: 0;
 }
 
 input:focus,
@@ -231,6 +249,26 @@ button:hover {
     flex-wrap: nowrap;
     overflow-x: auto;
     max-width: 100%;
+}
+
+.image_media img {
+    max-width: 200px;
+    max-height: 200px;
+    min-width: 200px;
+    min-height: 200px;
+    width: auto;
+    height: auto;
+    margin-right: 10px;
+}
+
+.image_media embed {
+    max-width: 300px;
+    max-height: 200px;
+    min-width: 300px;
+    min-height: 200px;
+    width: auto;
+    height: auto;
+    margin-right: 10px;
 }
 
 #figure_text {

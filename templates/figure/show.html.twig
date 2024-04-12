@@ -7,10 +7,26 @@
 
     <div id="figure_details">
         <div id="figure_header">
+        {% if is_granted('ROLE_USER') %}
             <div id="figure_option"><a href="{{ path('app_figure_edit', {'id': figureId }) }}">Modifier</a><a href="{{ path('app_figure_delete', {'id': figureId }) }}">Supprimer</a></div>
+        {% endif %}
             <h1>{{ figure.nom }}</h1>
         </div>
-        <div id="figure_medias">Medias</div>
+        <div id="figure_medias">
+        {% for image in images %}
+        <div class="image_media"><img src="{{ asset('medias/'~image.urlMedia) }}">
+        {% if is_granted('ROLE_USER') %}
+
+        {% endif %}
+        </div>
+        {% endfor %}
+        {% for video in videos %}
+        <div class="image_media"><embed src="{{ asset('medias/'~video.urlMedia) }}">
+        {% if is_granted('ROLE_USER') %}
+        {% endif %}
+        </div>
+        {% endfor %}
+        </div>
         <div id="figure_text">
             <p>{{ figure.description }}<p>
             <div id="figure_informations">

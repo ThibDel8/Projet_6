@@ -8,8 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 #[ORM\Entity(repositoryClass: FigureRepository::class)]
+#[UniqueEntity(fields: ['nom'], message: 'Il y a déjà une figure qui existe avec ce nom.')]
+#[UniqueEntity(fields: ['slug'], errorPath: 'nom', message: 'Il y a déjà une figure qui existe avec ce nom.')]
 class Figure
 {
     #[ORM\Id]
@@ -38,8 +42,11 @@ class Figure
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'figure', orphanRemoval: true)]
     private Collection $commentaires;
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'figure', orphanRemoval: true, cascade: ['persist'])]
     private Collection $medias;
+
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
 
     public function __construct()
     {
@@ -121,6 +128,7 @@ class Figure
     public function setNom(?string $nom): static
     {
         $this->nom = $nom;
+        $this->slug = mb_strtolower((new AsciiSlugger('fr'))->slug($nom));
 
         return $this;
     }
@@ -181,6 +189,18 @@ class Figure
     public function setDateCreation(\DateTimeInterface $dateCreation): static
     {
         $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }
