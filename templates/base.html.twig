@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Sniglet:wght@400;800&display=swap">
         <link rel="icon" href="/favicon.ico">
         {% block stylesheets %}
-        <link rel="stylesheet" href="assets/styles/app.css">
+        <link rel="stylesheet" href="/styles/app.css">
         {% endblock %}
 
         {% block javascripts %}
@@ -23,6 +23,20 @@
         <footer>
             {% include "footer.html.twig" %}
         </footer>
+
+        {% block flash_messages %}
+            {% for flash_message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ flash_message }}
+                </div>
+            {% endfor %}
+            {% for flash_message in app.flashes('error') %}
+                <div class="alert alert-danger">
+                    {{ flash_message }}
+                </div>
+            {% endfor %}
+        {% endblock %}
+
         {% block script %}
         {% endblock %}
     </body>

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Figure;
+use App\Form\CommentFormType;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,29 +14,33 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CommentController extends AbstractController
 {
-    #[Route('/figure/{id}/comment', name: 'app_figure_comment')]
-    public function sendComment($id, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/figure/{slug}/comment', name: 'app_figure_comment')]
+    public function sendComment($slug, EntityManagerInterface $entityManager, Request $request, CommentRepository $commentRepository): Response
     {
-        $commentText = $request->get('comment');
-
-        $now = new \DateTime();
-
-        $figure = $entityManager->getRepository(Figure::class)->find($id);
-
-        if (!$figure) {
-            throw $this->createNotFoundException('Figure non trouvée');
-        }
-
-        $user = $this->getUser();
+        $figure = $entityManager->getRepository(Figure::class)->findOneBy(['slug' => $slug]);
 
         $comment = new Comment();
-        $comment->setCommentaire($commentText);
-        $comment->setFigure($figure);
-        $comment->setUser($user);
+        $form = $this->createForm(CommentFormType::class, $comment);
+        $form->handleRequest($request);
 
-        $entityManager->persist($comment);
-        $entityManager->flush();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->getUser();
+            $comment->setUser($user);
+            $comment->setFigure($figure);
 
-        return $this->redirectToRoute('app_figure_details', ['id' => $id]);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Votre commentaire a été envoyé !');
+            return $this->redirectToRoute('app_figure_details', ['slug' => $slug]);
+        }
+
+        $comments = $commentRepository->findBy(['figure' => $figure]);
+
+        return $this->render('figure/details.html.twig', [
+            'form' => $form->createView(),
+            'figure' => $figure,
+            'comments' => $comments
+        ]);
     }
 }

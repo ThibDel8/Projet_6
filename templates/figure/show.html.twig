@@ -6,26 +6,25 @@
         {% set figureId = app.request.attributes.get('id') %}
 
     <div id="figure_details">
-        <div id="figure_header">
+        <div id="figure_header" style="background-image: url('/images/{% if figure.urlImageCover is not null %}{{ figure.urlImageCover }}{% else %}home_img.jpg{% endif %}')">
         {% if is_granted('ROLE_USER') %}
-            <div id="figure_option"><a href="{{ path('app_figure_edit', {'id': figureId }) }}">Modifier</a><a href="{{ path('app_figure_delete', {'id': figureId }) }}">Supprimer</a></div>
+            <div id="figure_option"><div id="options"><a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a><a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a></div></div>
         {% endif %}
-            <h1>{{ figure.nom }}</h1>
+            <div id="figure_title">
+                <h1>{{ figure.nom }}</h1>
+            </div>
         </div>
         <div id="figure_medias">
-        {% for image in images %}
-        <div class="image_media"><img src="{{ asset('medias/'~image.urlMedia) }}">
-        {% if is_granted('ROLE_USER') %}
-
-        {% endif %}
-        </div>
-        {% endfor %}
-        {% for video in videos %}
-        <div class="image_media"><embed src="{{ asset('medias/'~video.urlMedia) }}">
-        {% if is_granted('ROLE_USER') %}
-        {% endif %}
-        </div>
-        {% endfor %}
+            {% for image in images %}
+            <div class="image_media">
+                <img class="image_media_file" src="{{ asset('medias/'~image.urlMedia) }}">
+            </div>
+            {% endfor %}
+            {% for video in videos %}
+                <div class="image_media">
+                    {{ video.urlMedia|raw }}
+                </div>
+            {% endfor %}
         </div>
         <div id="figure_text">
             <p>{{ figure.description }}<p>
@@ -37,11 +36,15 @@
                 </div>
         </div>
         {% if app.user %}
-        <form id="comment_form" action="{{ path('app_figure_comment', {'id': figureId }) }}" method="post">
-            <label for="comment"></label>
-            <input type="text" id="comment" name="comment">
-            <button type="submit">Envoyer un commentaire</button>
-        </form>
+        {{ form_errors(form) }}
+
+        {{ form_start(form, {'attr': {'id': 'comment_form'}}) }}
+            {{ form_row(form.commentaire, {
+                'row_attr': {'class': 'comment_label_input'}})
+                }}<br>
+            <button type="submit" class="btn">Envoyer un commentaire</button>
+
+        {{ form_end(form) }}
         {% endif %}
         <div id="figure_comments">
         {% if comments is not empty %}

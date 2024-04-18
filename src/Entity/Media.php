@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MediaRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
@@ -16,7 +17,7 @@ class Media
     #[ORM\Column(length: 50)]
     private ?string $type = null;
 
-    #[ORM\Column(length: 150, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $urlMedia = null;
 
     #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'medias')]
