@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une figure{% endblock %}
+
+{% block main %}
+
+<div id="registration">
+
+    <h1>Créer une nouvelle figure</h1>
+
+        {{ form_errors(form) }}
+
+        {{ form_start(form) }}
+            {{ form_row(form.nom, {
+                label: 'Nom de la figure',
+                'row_attr': {'class': 'label_input'}})
+                }}<br>
+            {{ form_row(form.description, {
+                label: 'Déscription',
+                'row_attr': {'class': 'label_input'}})
+                }}<br>
+            {{ form_row(form.groupe, {
+                label: 'Groupe de la figure',
+                'row_attr': {'class': 'label_input'}})
+                }}<br>
+            {{ form_label(form.images, 'Médias de la figure') }}
+                <br>
+            {{ form_widget(form.images, {'row_attr': {'class': 'label_input'}}) }}
+                <br>
+            {{ form_row(form.embeds, {
+                label: 'Balises embed (une par ligne)',
+                'row_attr': {'class': 'label_input'}}) }}
+                <br>
+
+            <button type="submit" class="btn">Créer la figure</button>
+
+        {{ form_end(form) }}
+    
+</div>
+{% endblock %}
