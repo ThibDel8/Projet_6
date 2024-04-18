@@ -9,10 +9,13 @@
         <p>"Plongez dans l'univers enneigé du snowboard avec notre communauté passionnée !<br>
         Découvrez, partagez et échangez sur les figures emblématiques du snowboard, enrichissant ainsi votre expérience glisse comme jamais auparavant.<br>
         Rejoignez-nous pour explorer les pentes, apprendre de nouvelles astuces et connecter avec d'autres riders enthousiastes !"</p>
+        <a class="arrow_link" href="{{ path('app_home') }}#tricks_list"><img class="arrow" src="/images/arrow_bot.png" alt="Logo flèche vers le bas" title="Aller vers la liste des figures"></img></a>
     </section>
 
     <section id="tricks_list">
         {% include "figure/figures_list.html.twig" %}
+        <br>
+        <a class="arrow_link" href="{{ path('app_home') }}"><img class="arrow" src="/images/arrow_top.png" alt="Logo flèche vers le haut" title="Aller vers l'accueil"></img></a>
     </section>
 
 {% endblock %}

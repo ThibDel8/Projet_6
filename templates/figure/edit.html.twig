@@ -4,33 +4,70 @@
 
 {% block main %}
 
-<div id="registration">
+        {{ form_errors(form) }}
 
-    <h1>Modification de la figure</h1>
-
-        {{ form_errors(FigureForm) }}
-
-        {{ form_start(FigureForm) }}
-            {{ form_row(FigureForm.nom, {
-                label: 'Nom de la figure',
+<div id="figure_details">
+        <div id="figure_header" style="background-image: url('/images/{% if figure.urlImageCover is not null %}{{ figure.urlImageCover }}{% else %}home_img.jpg{% endif %}')">
+            <div id="figure_option"><div id="options"><a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier l'image de couverture"></a><a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer l'image de couverture et remettre celle par défaut"></a></div></div>
+            <div id="figure_title">
+                <h2>(modification)</h2>
+                <h1>
+        {{ form_start(form) }}
+            {{ form_row(form.nom, {
+                label : 'Nom de la figure :',
                 'row_attr': {'class': 'label_input'}})
-                }}<br>
-            {{ form_row(FigureForm.description, {
+                }}</h1>
+            </div>
+        </div>
+        <div id="figure_medias">
+        {% for image in images %}
+            <div class="image_media">
+                <img class="image_media_file" src="{{ '/medias/'~image.urlMedia }}">
+                <div class="edit_modify_delete">
+                    <a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img class="modify_delete_img" src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a>
+                    <a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img class="modify_delete_img" src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a>
+                </div>          
+            </div>
+        {% endfor %}
+        {% for video in videos %}
+            <div class="image_media">
+                {{ video.urlMedia|raw }}
+                <div class="edit_modify_delete">
+                    <a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img class="modify_delete_img" src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a>
+                    <a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img class="modify_delete_img" src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+        <br>
+        <div id="figure_text">
+            {{ form_label(form.images, 'Médias de la figure') }}
+                <br>
+            {{ form_widget(form.images, {'row_attr': {'class': 'label_input'}}) }}
+                <br>
+            {{ form_row(form.embeds, {
+                label: 'Balises embed (une par ligne)',
+                'row_attr': {'class': 'label_input'}}) }}
+                <br>
+            {{ form_row(form.description, {
                 label: 'Déscription',
                 'row_attr': {'class': 'label_input'}})
                 }}<br>
-            {{ form_row(FigureForm.groupe, {
-                label: 'Groupe de la figure',
-                'row_attr': {'class': 'label_input'}})
-                }}<br>
-                {{ form_row(FigureForm.files, {
-                label: 'Médias de la figure',
-                'row_attr': {'class': 'label_input'}})
-                }}<br>
+            <div id="edit_form">
+                <div id="edit_form_groupe">
+                {{ form_row(form.groupe, {
+                    label: 'Groupe de la figure',
+                    'row_attr': {'class': 'label_input'}})
+                    }}
+                </div>
+                <div id="edit_form_validation">
+                    <button class="btn delete" href="{{ path('app_figure_delete', {'slug': figure.slug }) }}">Supprimer la figure</button>
+                    <button type="submit" class="btn">Modifier la figure</button>
+                </div>
+            </div>
+        </div>
 
-            <button type="submit" class="btn">Modifier la figure</button>
-
-        {{ form_end(FigureForm) }}
+        {{ form_end(form) }}
     
 </div>
 {% endblock %}
