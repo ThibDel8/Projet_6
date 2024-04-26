@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class FigureController extends AbstractController
 {
@@ -87,7 +86,7 @@ class FigureController extends AbstractController
     }
 
     #[Route('/figure/{slug}', name: 'app_figure_details', requirements: ['slug' => '[aA0-zZ9\-]+'])]
-    public function show($slug, Figure $figure, EntityManagerInterface $entityManager, CommentRepository $commentRepository, Request $request): Response
+    public function show(string $slug, Figure $figure, EntityManagerInterface $entityManager, CommentRepository $commentRepository, Request $request): Response
     {
         $user = $this->getUser();
 
@@ -127,7 +126,7 @@ class FigureController extends AbstractController
     }
 
     #[Route('/figure/{slug}/edit', name: 'app_figure_edit', requirements: ['slug' => '[aA0-zZ9\-]+'])]
-    public function edit($slug, Request $request, Figure $figure, EntityManagerInterface $entityManager, Security $security): Response
+    public function edit(string $slug, Request $request, Figure $figure, EntityManagerInterface $entityManager, Security $security): Response
     {
         $form = $this->createForm(FigureFormType::class, $figure);
         $form->handleRequest($request);
@@ -178,7 +177,7 @@ class FigureController extends AbstractController
     }
 
     #[Route('/figure/{slug}/media/{id}/delete', name: 'app_figure_delete_media', requirements: ['id' => '\d+', 'slug' => '[aA0-zZ9\-]+'])]
-    public function deleteMedia($slug, $id, EntityManagerInterface $entityManager): Response
+    public function deleteMedia(string $slug, int $id, EntityManagerInterface $entityManager): Response
     {
         $media = $entityManager->getRepository(Media::class)->find($id);
 

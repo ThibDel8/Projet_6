@@ -27,7 +27,7 @@ class HomeController extends AbstractController
 
         foreach ($figures as $figure) {
 
-            $images = $figure->getMedias()->filter(function ($media) {
+            $images = $figure->getMedias()->filter(function (Media $media) {
                 return $media->getType() === 'image';
             });
 
