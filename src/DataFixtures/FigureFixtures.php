@@ -21,6 +21,7 @@ class FigureFixtures extends Fixture implements OrderedFixtureInterface
             $media
                 ->setUrlMedia('mon_image_test.jpg')
                 ->setType('image')
+                ->setByDefault(true)
                 ->setFigure($figure);
 
             $figure
@@ -28,9 +29,11 @@ class FigureFixtures extends Fixture implements OrderedFixtureInterface
                 ->setDateMaj(new DateTime('now'))
                 ->setUser($this->getReference('user=test'))
                 ->setNom('Figure ' . $i)
-                ->setGroupe('Groupe ' . $i)
+                ->setGroupe('Flips')
                 ->setDescription('Description blahblah')
                 ->addMedia($media);
+
+            $this->setReference('figure-' . $i, $figure);
 
             $manager->persist($figure);
         }

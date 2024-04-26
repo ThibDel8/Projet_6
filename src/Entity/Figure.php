@@ -219,4 +219,15 @@ class Figure
 
         return $this;
     }
+
+    public function getDefaultImage(): ?Media
+    {
+        $media = $this->medias->filter(fn (Media $media) => $media->getType() === 'image' && $media->isByDefault())->first();
+
+        if (false === $media) {
+            $media = $this->medias->filter(fn (Media $media) => $media->getType() === 'image')->first();
+        }
+
+        return $media instanceof Media ? $media : null;
+    }
 }

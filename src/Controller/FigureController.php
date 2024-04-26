@@ -5,19 +5,19 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Figure;
 use App\Entity\Media;
-use App\Entity\User;
 use App\Form\CommentFormType;
 use App\Form\FigureFormType;
+use App\Repository\CommentRepository;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class FigureController extends AbstractController
 {
@@ -60,17 +60,17 @@ class FigureController extends AbstractController
     private function processVideos(Figure $figure, ?string $embeds = ''): void
     {
         foreach (preg_split('/\n|\r\n?/', $embeds) as $embed) {
-            $media = new Media();
-            $media->setUrlMedia($embed);
-            $media->setType('video');
-            $figure->addMedia($media);
+            if (false === empty($embed)) {
+                $media = new Media();
+                $media->setUrlMedia($embed);
+                $media->setType('video');
+                $figure->addMedia($media);
+            }
         }
     }
 
     private function processImages(Figure $figure, ?array $mediaFiles = []): void
     {
-        $i = 0;
-
         foreach ($mediaFiles as $mediaFile) {
             $newFileName = uniqid() . '.' . $mediaFile->guessExtension();
 
@@ -81,17 +81,13 @@ class FigureController extends AbstractController
                 $media->setUrlMedia($newFileName);
                 $media->setType('image');
                 $figure->addMedia($media);
-                if ($i == 0) {
-                    $figure->setUrlImageCover($newFileName);
-                }
             } catch (FileException $e) {
             }
-            $i++;
         }
     }
 
-    #[Route('/figure/{slug}', name: 'app_figure_details')]
-    public function show($slug, Figure $figure, EntityManagerInterface $entityManager, Request $request): Response
+    #[Route('/figure/{slug}', name: 'app_figure_details', requirements: ['slug' => '[aA0-zZ9\-]+'])]
+    public function show($slug, Figure $figure, EntityManagerInterface $entityManager, CommentRepository $commentRepository, Request $request): Response
     {
         $user = $this->getUser();
 
@@ -111,18 +107,26 @@ class FigureController extends AbstractController
             return $this->redirectToRoute('app_figure_details', ['slug' => $slug]);
         }
 
-        $comments = $figure->getCommentaires();
+        $figureId = $figure->getId();
+        $page = $request->query->getInt('page', 1);
+        $limit = 10;
+
+        $paginator = $commentRepository->paginateComment($figureId, $page, $limit);
+        $comments = $paginator->getIterator();
+        $maxPage = ceil($paginator->count() / $limit);
 
         return $this->render('figure/show.html.twig', [
             'figure' => $figure,
-            'images' => $figure->getMedias()->filter(fn (Media $media) => $media->getType() === 'image')->toArray(),
-            'videos' => $figure->getMedias()->filter(fn (Media $media) => $media->getType() === 'video')->toArray(),
+            'images' => $figure->getMedias()->filter(fn (Media $media) => $media->getType() === 'image'),
+            'videos' => $figure->getMedias()->filter(fn (Media $media) => $media->getType() === 'video'),
             'comments' => $comments,
+            'page' => $page,
+            'maxPage' => $maxPage,
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/figure/{slug}/edit', name: 'app_figure_edit')]
+    #[Route('/figure/{slug}/edit', name: 'app_figure_edit', requirements: ['slug' => '[aA0-zZ9\-]+'])]
     public function edit($slug, Request $request, Figure $figure, EntityManagerInterface $entityManager, Security $security): Response
     {
         $form = $this->createForm(FigureFormType::class, $figure);
@@ -163,7 +167,7 @@ class FigureController extends AbstractController
         ]);
     }
 
-    #[Route('/figure/{slug}/delete', name: 'app_figure_delete')]
+    #[Route('/figure/{slug}/delete', name: 'app_figure_delete', requirements: ['slug' => '[aA0-zZ9\-]+'])]
     public function delete(Figure $figure, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($figure);
@@ -171,5 +175,28 @@ class FigureController extends AbstractController
 
         $this->addFlash('success', 'La figure a été suprimée avec succès !');
         return $this->redirectToRoute('app_home');
+    }
+
+    #[Route('/figure/{slug}/media/{id}/delete', name: 'app_figure_delete_media', requirements: ['id' => '\d+', 'slug' => '[aA0-zZ9\-]+'])]
+    public function deleteMedia($slug, $id, EntityManagerInterface $entityManager): Response
+    {
+        $media = $entityManager->getRepository(Media::class)->find($id);
+
+        $entityManager->remove($media);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_figure_edit', ['slug' => $slug]);
+    }
+
+    #[Route('/figure/{slug}/edit/media/{id}/default', name: 'app_figure_edit_media_default', requirements: ['id' => '\d+', 'slug' => '[aA0-zZ9\-]+'])]
+    public function updateDefaultMedia(#[MapEntity(mapping: ['slug' => 'slug'])] Figure $figure, Media $media, EntityManagerInterface $entityManager): Response
+    {
+        $figure->getDefaultImage()?->setByDefault(false);
+
+        $media->setByDefault(true);
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_figure_edit', ['slug' => $figure->getSlug()]);
     }
 }

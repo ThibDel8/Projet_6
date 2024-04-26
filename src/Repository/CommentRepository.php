@@ -3,8 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Comment;
+use App\Entity\Figure;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<Comment>
@@ -21,28 +24,20 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-//    /**
-//     * @return Comment[] Returns an array of Comment objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function paginateComment(int $figureId, int $page, int $limit): Paginator
+    {
+        $qb = $this->createQueryBuilder('comment')
+            ->where('comment.figure = :figureId')
+            ->orderBy('comment.id', 'DESC')
+            ->setParameter('figureId', $figureId)
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
 
-//    public function findOneBySomeField($value): ?Comment
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return new Paginator(
+            $qb
+                ->getQuery()
+                ->setHint(Paginator::HINT_ENABLE_DISTINCT, false),
+            false
+        );
+    }
 }

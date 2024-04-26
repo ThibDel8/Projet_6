@@ -54,9 +54,9 @@ class FigureFormType extends AbstractType
                             'mimeTypes' => [
                                 'image/*'
                             ],
-                            'mimeTypesMessage' => 'Veuillez télécharger une image (jpg, jpeg, png) ou une vidéo (mp4, avi).',
+                            'mimeTypesMessage' => 'Veuillez télécharger une image (jpg, jpeg, png)',
                             'maxSize' => '20M',
-                            'maxSizeMessage' => 'La taille du fichier ne doit pas dépasser 20 Mo.',
+                            'maxSizeMessage' => 'La taille de votre image ne doit pas dépasser 20 Mo.',
                         ])
                     ]),
                 ],

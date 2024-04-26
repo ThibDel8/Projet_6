@@ -23,6 +23,9 @@ class Media
     #[ORM\ManyToOne(targetEntity: Figure::class, inversedBy: 'medias')]
     private ?Figure $figure = null;
 
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $byDefault = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Media
     public function setFigure(?Figure $figure): static
     {
         $this->figure = $figure;
+
+        return $this;
+    }
+
+    public function isByDefault(): bool
+    {
+        return $this->byDefault;
+    }
+
+    public function setByDefault(bool $byDefault): static
+    {
+        $this->byDefault = $byDefault;
 
         return $this;
     }

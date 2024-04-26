@@ -22,6 +22,11 @@
                 label: 'Mot de passe',
                 'row_attr': {'class': 'label_input'}})
                 }}<br>
+            {{ form_label(registrationForm.urlPhotoProfil, 'Photo de profil')
+                }}<br>
+            {{ form_widget(registrationForm.urlPhotoProfil, {
+                'row_attr': { 'class': 'label_input' }})
+                }}<br>
             {{ form_row(registrationForm.agreeTerms, {
                 label: 'J\'accepte les termes'})
                 }}<br>

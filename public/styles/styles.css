@@ -82,6 +82,11 @@ main {
     flex-grow: 1;
 }
 
+#figure_details,
+#registration form {
+    background-color: #f5f5f5;
+}
+
 .mb-3 {
     display: flex;
     flex-direction: column;
@@ -96,7 +101,7 @@ main {
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-image: url('../../images/home_img.jpg');
+    background-image: url('/images/home_img.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
@@ -249,7 +254,6 @@ h2 {
     flex-direction: column;
     align-items: center;
     border: 2px solid #4c3048;
-    background-color: white;
 }
 
 #registration form textarea {
@@ -308,15 +312,20 @@ input:focus,
     border-color: orange;
 }
 
-button {
+button,
+.btn {
     border: 2px solid #4c3048;
+    text-decoration: none;
+    padding: 3px;
+    color: #000;
     font-family: 'Sniglet', sans-serif;
     box-shadow: 3px 3px #000;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
-button:hover {
+button:hover,
+.btn:hover {
     transform: translate(3px, 3px);
     box-shadow: 3px 3px rgba(0, 0, 0, 0);
 }
@@ -364,7 +373,6 @@ button:hover {
 
 #figure_title {
     height: 100%;
-    margin: -50px 0 0 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -386,6 +394,16 @@ button:hover {
     flex-wrap: nowrap;
     overflow-x: auto;
     max-width: 100%;
+}
+
+#pagination {
+    width: 60%;
+    margin-left: 70px;
+    display: flex;
+}
+
+.suivant {
+    margin: 0 0 0 auto;
 }
 
 .image_media_file,
@@ -411,14 +429,30 @@ iframe {
 }
 
 #figure_text {
-    padding-bottom: 20px;
+    padding: 5px 15px 20px 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: justify;
+}
+
+#figure_informations {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#figure_informations div {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 8px;
+    color: #8ea3b8;
+    background-color: #4c3048;
 }
 
 #figure_text textarea {
-    width: 80%;
+    min-width: 80%;
+    max-width: 80%;
     height: 150px;
     border-top: 1px solid #000;
 }
@@ -444,6 +478,18 @@ iframe {
     margin-right: 10px;
     color: aliceblue;
     background-color: #a70404;
+}
+
+#cancel {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: end;
+}
+
+#cancel a {
+    color: #a70404;
+    font-size: 0.9rem;
 }
 
 #comment_form,
@@ -475,26 +521,39 @@ iframe {
 }
 
 .comment {
-    height: 50px;
+    min-height: 70px;
     width: 66%;
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
 .comment img {
-    height: 100%;
+    height: 60px;
+    margin-top: 8px;
+    margin-right: 10px;
     border-radius: 50%;
 }
 
-.comment p {
-    min-height: 30px;
-    width: calc(100% - 50px - 30px);
+.commentaire {
+    height: 100%;
+    width: 100%;
     padding: 8px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     border: 1px solid #4c3048;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.commentaire_message {
+    font-size: 1.1rem;
+}
+
+.commentaire_infos p {
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: right;
 }
 
 footer {

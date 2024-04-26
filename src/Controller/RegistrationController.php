@@ -10,6 +10,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -35,7 +36,15 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
+
+            $photoProfil = $form->get('urlPhotoProfil')->getData();
+            $newFileName = uniqid() . '.' . $photoProfil->guessExtension();
+            try {
+                $photoProfil->move('profil/', $newFileName);
+            } catch (FileException $e) {
+            }
+
+            $user->setUrlPhotoProfil($newFileName);
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -43,7 +52,6 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $user->setUrlPhotoProfil('default_profile.jpg');
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -62,7 +70,6 @@ class RegistrationController extends AbstractController
             $this->addFlash('success', 'Inscription réussie, un mail de confirmation vous a été envoyé !');
             return $this->redirectToRoute('app_home');
         }
-
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);

@@ -13,7 +13,7 @@
         {% set image = imagesByFigure[figure.id] %}
         <div class="trick">
             <div class="image_container">
-                <img src="medias/{{ image.urlMedia }}" title="{{ figure.groupe }}">
+                <img src="/medias/{{ image.urlMedia }}" title="{{ figure.groupe }}">
             </div>
             <div class="read_trick">
                 <a href="{{ path('app_figure_details', {'slug': figure.slug } ) }}" title="Voir la page">

@@ -6,11 +6,11 @@
         {% set figureId = app.request.attributes.get('id') %}
 
     <div id="figure_details">
-        <div id="figure_header" style="background-image: url('/images/{% if figure.urlImageCover is not null %}{{ figure.urlImageCover }}{% else %}home_img.jpg{% endif %}')">
+        <div id="figure_header" style="background-image: url('{% if figure.defaultImage is not null %}/medias/{{ figure.defaultImage.urlMedia }}{% else %}/images/home_img.jpg{% endif %}')">
         {% if is_granted('ROLE_USER') %}
             <div id="figure_option"><div id="options"><a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a><a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a></div></div>
         {% endif %}
-            <div id="figure_title">
+            <div id="figure_title"{% if is_granted('ROLE_USER') %}style="margin-top: -50px;"{% endif %}>
                 <h1>{{ figure.nom }}</h1>
             </div>
         </div>
@@ -29,11 +29,11 @@
         <div id="figure_text">
             <p>{{ figure.description }}<p>
             <div id="figure_informations">
-                <div>Groupe : {{ figure.groupe }}</div>
+                <div>Rédigé par : {{ figure.user.username }}</div>
                 <div>Créé le : {{ figure.dateCreation|format_datetime('full', 'short') }}</div>
                 {% if figure.dateMaj is not null %}<div>Modifié le : {{ figure.dateMaj|format_datetime('full', 'short') }}</div>{% endif %}
-                <div>Rédigé par : {{ figure.user.username }}</div>
-                </div>
+                <div>Groupe : {{ figure.groupe }}</div>
+            </div>
         </div>
         {% if app.user %}
         {{ form_errors(form) }}
@@ -49,14 +49,26 @@
         <div id="figure_comments">
         {% if comments is not empty %}
             {% for comment in comments %}
-                <div class="comment {{ loop.index > 4 ? "hidden" : "" }}">
-                    <img src="/default_profile.jpg">
-                    <p title="Écrit par {{ comment.user.username }} le {{ comment.date|format_datetime('full', 'short') }}">{{ comment.commentaire }}</p>
+                <div class="comment }}">
+                    <img src="/profil/{{ comment.user.urlPhotoProfil }}">
+                    <div class="commentaire">
+                        <div class="commentaire_message">{{ comment.commentaire }}</div>
+                        <div class="commentaire_infos">
+                            <p>Commenté par {{ comment.user.username }}</p>
+                            <p>le {{ comment.date|format_datetime('full', 'short') }}</p>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
-                {% if comments|length > 4 %}
-                    <span id="load_more">Afficher plus</span>
-                {% endif %}
+            <br>
+            <div id="pagination">
+            {% if page > 1 %}
+                        <a class="btn" href="{{ path('app_figure_details', {'slug': figure.slug, page: page - 1 }) }}">Commentaires précedents</a>
+            {% endif %}
+            {% if page < maxPage %}
+                        <a class="btn suivant" href="{{ path('app_figure_details', {'slug': figure.slug, page: page + 1 }) }}">Commentaires suivants</a>
+            {% endif %}
+            </div>
         {% else %}
             <p>Cette figure de snowboard n'a pas encore été commentée.</p>
         {% endif %}
@@ -68,12 +80,4 @@
 
 
 {% block script %}
-    <script>
-        document.getElementById("load_more").addEventListener("click", ()=> {
-            const comments = document.querySelectorAll(".comment.hidden")
-            comments.forEach((comment)=>{
-                comment.classList.remove("hidden")
-            })
-        })
-    </script>
 {% endblock %}
