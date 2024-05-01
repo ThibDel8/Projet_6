@@ -12,7 +12,7 @@ class CleanEmbed extends AbstractExtension
         return [new TwigFilter('embed', [$this, 'clean'], ['is_safe' => ['html']])];
     }
 
-    public function clean(string $embed)
+    public function clean(string $embed): string
     {
         $embed = strip_tags($embed, '<iframe>');
 

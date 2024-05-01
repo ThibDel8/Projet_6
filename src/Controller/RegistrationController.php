@@ -104,7 +104,7 @@ class RegistrationController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    public function confirmRegistration()
+    public function confirmRegistration(): void
     {
     }
 }
