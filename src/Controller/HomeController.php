@@ -22,18 +22,13 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         $figures = $this->entityManager->getRepository(Figure::class)->findAll();
-
         $imagesByFigure = [];
 
         foreach ($figures as $figure) {
+            $images = $figure->getMedias()->filter(fn (Media $media) => $media->getByDefault());
 
-            $images = $figure->getMedias()->filter(function (Media $media) {
-                return $media->getType() === 'image';
-            });
-
-            $firstImage = $images->first();
-            if ($firstImage) {
-                $imagesByFigure[$figure->getId()] = $firstImage;
+            foreach ($images as $image) {
+                $imagesByFigure[$figure->getId()] = $image->getUrlMedia();
             }
         }
 

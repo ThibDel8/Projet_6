@@ -72,6 +72,11 @@ class Media
         return $this->byDefault;
     }
 
+    public function getByDefault(): bool
+    {
+        return $this->byDefault;
+    }
+
     public function setByDefault(bool $byDefault): static
     {
         $this->byDefault = $byDefault;

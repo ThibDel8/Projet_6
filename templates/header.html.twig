@@ -1,13 +1,29 @@
-<a id="logo" href="{{ path('app_home') }}"><img src="/logo.png" title="Accueil" alt="Logo du site SnowTricks"></a>
-<nav>
+<a id="logo" class="pc" href="{{ path('app_home') }}"><img src="/logo.png" title="Accueil" alt="Logo du site SnowTricks"></a>
+
+<!-- Navigation pour PC -->
+<nav class="pc">
     <ul>
         <li><a href="{{ path('app_home') }}">Accueil</a></li>|
-        <li><a href="{{ path('app_home') }}#tricks_list">Figures</a></li>|
+        <li><a href="{{ path('app_home') }}#tricksList">Figures</a></li>|
         {% if app.user %}
                 <li><a href="{{ path('app_logout') }}">Se déconnecter</a></li>
         {% else %}
         <li><a href="{{ path('app_login') }}" >Se connecter</a></li>|
         <li><a href="{{ path('app_register') }}">S'inscrire</a></li>
+        {% endif %}
+    </ul>
+</nav>
+
+
+<!-- Navigation pour mobile -->
+<nav class="mobile">
+    <ul>
+        <li><a href="{{ path('app_home') }}"><img src="/images/home.png" alt="Icone accueil"></a></li>
+        <li><a href="{{ path('app_home') }}#tricksList"><img src="/images/figures.png" alt="Icone figures"></a></li>
+        {% if app.user %}
+                <li><a href="{{ path('app_logout') }}"><img src="/images/logout.png" alt="Icone déconnexion"></a></li>
+        {% else %}
+        <li><a href="{{ path('app_login') }}" ><img src="/images/login.png" alt="Icone connexion"></a></li>
         {% endif %}
     </ul>
 </nav>

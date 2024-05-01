@@ -4,9 +4,11 @@
 
 {% block main %}
 
-<div id="registration">
+    <h1 class="pc">Créer une nouvelle figure</h1>
 
-    <h1>Créer une nouvelle figure</h1>
+<div id="authPanel">
+
+    <h1 class="mobile">Créer une nouvelle figure</h1>
 
         {{ form_errors(form) }}
 
@@ -34,7 +36,9 @@
 
             <button type="submit" class="btn">Créer la figure</button>
 
-        {{ form_end(form) }}
-    
+        {{ form_end(form) }}<br>
+        <div id="cancel">
+            <a href="{{ path('app_home') }}#tricksList">Annuler</a>
+        </div>
 </div>
 {% endblock %}
