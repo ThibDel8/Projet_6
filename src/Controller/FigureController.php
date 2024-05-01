@@ -52,7 +52,6 @@ class FigureController extends AbstractController
     {
         foreach (preg_split('/\n|\r\n?/', $embeds) as $embed) {
             if (false === empty($embed)) {
-                $embed = strip_tags($embed, '<iframe>');
                 $media = new Media();
                 $media->setUrlMedia($embed);
                 $media->setType('video');
