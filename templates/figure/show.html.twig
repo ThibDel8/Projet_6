@@ -4,17 +4,30 @@
 
 {% block main %}
         {% set figureId = app.request.attributes.get('id') %}
+<div id="page">
+    <section id="figureSection">
+        {% set defaultImageUrl = '/images/home_img.jpg' %}
+            {% for image in images %}
+                {% if image.byDefault %}
+                    {% set defaultImageUrl = '/medias/' ~ image.urlMedia %}
+                {% endif %}
+            {% endfor %}
 
-    <div id="figure_details">
-        <div id="figure_header" style="background-image: url('{% if figure.defaultImage is not null %}/medias/{{ figure.defaultImage.urlMedia }}{% else %}/images/home_img.jpg{% endif %}')">
-        {% if is_granted('ROLE_USER') %}
-            <div id="figure_option"><div id="options"><a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a><a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a></div></div>
-        {% endif %}
-            <div id="figure_title"{% if is_granted('ROLE_USER') %}style="margin-top: -50px;"{% endif %}>
+        <div id="figure_header" class="pageElement" style="background-image: url('{{ defaultImageUrl }}')">
+            {% if is_granted('ROLE_USER') %}
+                <div id="figure_option" class="pageElement">
+                    <div id="options">
+                        <a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a>
+                        <a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a>
+                    </div>
+                </div>
+            {% endif %}
+        <div id="figure_title" class="pageElement" {% if is_granted('ROLE_USER') %}style="margin-top: -50px;"{% endif %}>
                 <h1>{{ figure.nom }}</h1>
             </div>
         </div>
-        <div id="figure_medias">
+        <div class="mobile showMedias pageElement"><button>Afficher les médias</button></div>
+        <div id="figure_medias" class="pageElement">
             {% for image in images %}
             <div class="image_media">
                 <img class="image_media_file" src="{{ asset('medias/'~image.urlMedia) }}">
@@ -26,27 +39,37 @@
                 </div>
             {% endfor %}
         </div>
-        <div id="figure_text">
-            <p>{{ figure.description }}<p>
-            <div id="figure_informations">
-                <div>Rédigé par : {{ figure.user.username }}</div>
-                <div>Créé le : {{ figure.dateCreation|format_datetime('full', 'short') }}</div>
-                {% if figure.dateMaj is not null %}<div>Modifié le : {{ figure.dateMaj|format_datetime('full', 'short') }}</div>{% endif %}
-                <div>Groupe : {{ figure.groupe }}</div>
-            </div>
+        <div id="figure_text" class="pageElement">
+            <p>{{ figure.description|nl2br }}</p>
         </div>
+        <div id="figure_informations" class="pageElement">
+            <div>Rédigé par : {{ figure.user.username }}</div>
+            <div>Créé le : {{ figure.dateCreation|format_datetime('full', 'short') }}</div>
+            {% if figure.dateMaj is not null %}<div>Modifié le : {{ figure.dateMaj|format_datetime('full', 'short') }}</div>{% endif %}
+            <div>Groupe : {{ figure.groupe }}</div>
+        </div>
+
+    </section>
+
+    <section id="commentSection">
         {% if app.user %}
-        {{ form_errors(form) }}
+            <div id="commentForm" class="pageElement">
+                {% if app.user.isVerified %}
+                    {{ form_errors(form) }}
 
-        {{ form_start(form, {'attr': {'id': 'comment_form'}}) }}
-            {{ form_row(form.commentaire, {
-                'row_attr': {'class': 'comment_label_input'}})
-                }}<br>
-            <button type="submit" class="btn">Envoyer un commentaire</button>
+                    {{ form_start(form, {'attr': {'id': 'comment_form'}}) }}
+                    {{ form_row(form.commentaire, {
+                        'row_attr': {'class': 'comment_label_input'}})
+                        }}<br>
+                    <button type="submit" class="btn">Envoyer un commentaire</button>
 
-        {{ form_end(form) }}
+                    {{ form_end(form) }}
+                {% else %}
+                <p>Validez votre inscription en cliquant sur le lien reçu par e-mail pour pouvoir commenter.</p>
+                {% endif %}
+            </div>
         {% endif %}
-        <div id="figure_comments">
+        <div id="commentsList" class="pageElement">
         {% if comments is not empty %}
             {% for comment in comments %}
                 <div class="comment }}">
@@ -63,21 +86,17 @@
             <br>
             <div id="pagination">
             {% if page > 1 %}
-                        <a class="btn" href="{{ path('app_figure_details', {'slug': figure.slug, page: page - 1 }) }}">Commentaires précedents</a>
+                        <a class="btn" href="{{ path('app_figure_details', {'slug': figure.slug, page: page - 1 }) }}">Précedents</a>
             {% endif %}
             {% if page < maxPage %}
-                        <a class="btn suivant" href="{{ path('app_figure_details', {'slug': figure.slug, page: page + 1 }) }}">Commentaires suivants</a>
+                        <a class="btn suivant" href="{{ path('app_figure_details', {'slug': figure.slug, page: page + 1 }) }}">Suivants</a>
             {% endif %}
             </div>
         {% else %}
             <p>Cette figure de snowboard n'a pas encore été commentée.</p>
         {% endif %}
         </div>
-    </div>
 
-
-{% endblock %}
-
-
-{% block script %}
+    </section>
+</div>
 {% endblock %}

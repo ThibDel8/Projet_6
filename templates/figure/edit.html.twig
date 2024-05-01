@@ -4,70 +4,82 @@
 
 {% block main %}
 
-        {{ form_errors(form) }}
+<div id="page">
+    <section id="figureSection">
+        {% set defaultImageUrl = '/images/home_img.jpg' %}
+            {% for image in images %}
+                {% if image.byDefault %}
+                    {% set defaultImageUrl = '/medias/' ~ image.urlMedia %}
+                {% endif %}
+            {% endfor %}
 
-<div id="figure_details">
-        <div id="figure_header" style="background-image: url('{% if figure.defaultImage is not null %}/medias/{{ figure.defaultImage.urlMedia }}{% else %}/images/home_img.jpg{% endif %}')">
-            <div id="figure_option"><div id="options"><a href="#"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier l'image de couverture"></a><a href="#"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer l'image de couverture et remettre celle par défaut"></a></div></div>
-            <div id="figure_title">
-                <h2>(modification)</h2>
-                <h1>
-        {{ form_start(form) }}
-            {{ form_row(form.nom, {
-                label : 'Nom de la figure :',
-                'row_attr': {'class': 'label_input'}})
-                }}</h1>
-            </div>
-        </div>
-        <div id="figure_medias">
-        {% for image in images %}
-            <div class="image_media">
-                <img class="image_media_file" src="{{ '/medias/'~image.urlMedia }}">
-                <div class="edit_modify_delete">
-                    <a href="{{ path('app_figure_edit_media_default', {'slug': figure.slug, 'id': image.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir définir cette image comme couverture de page ?')"><img class="modify_delete_img" src="/images/pencil.png" alt="Logo" title="Mettre par default"></a>
-                    <a href="{{ path('app_figure_delete_media', {'slug': figure.slug, 'id': image.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')"><img class="modify_delete_img" src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer cette image"></a>
-                </div>          
-            </div>
-        {% endfor %}
-        {% for video in videos %}
-            <div class="image_media">
-                {{ video.urlMedia|raw }}
-                <div class="edit_modify_delete">
-                    <a href="{{ path('app_figure_delete_media', {'slug': figure.slug, 'id': video.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')"><img class="modify_delete_img" src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer cette vidéo"></a>
+        <div id="figure_header" class="pageElement" style="background-image: url('{{ defaultImageUrl }}')">
+            <div id="figure_option" class="pageElement">
+                <div id="options">
+                    <a href="#"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier l'image de couverture"></a>
+                    <a href="{{ path('app_figure_delete_cover', {'slug': figure.slug }) }}"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer l'image de couverture et remettre celle par défaut"></a>
                 </div>
             </div>
-        {% endfor %}
+            <div id="figure_title" class="pageElement" {% if is_granted('ROLE_USER') %}style="margin-top: -50px;"{% endif %}>
+                {{ form_start(form) }}
+                <h2>(modification)</h2>
+                <h1>{{ form_row(form.nom, { label : 'Nom de la figure :', 'row_attr': {'class': 'label_input'}}) }}</h1>
+            </div>
         </div>
-        <br>
-        <div id="figure_text">
-            {{ form_label(form.images, 'Médias de la figure') }}
+        <div class="mobile showMedias pageElement"><button>Afficher les médias</button></div>
+        <div id="figure_medias" class="pageElement">
+            {% for image in images %}
+                <div class="image_media">
+                    <img class="image_media_file" src="{{ '/medias/'~image.urlMedia }}">
+                    <div class="edit_modify_delete">
+                        <a href="{{ path('app_figure_edit_media_default', {'slug': figure.slug, 'id': image.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir définir cette image comme couverture de page ?')"><img class="modify_delete_img" src="/images/pencil.png" alt="Logo" title="Mettre par default"></a>
+                        <a href="{{ path('app_figure_delete_media', {'slug': figure.slug, 'id': image.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')"><img class="modify_delete_img" src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer cette image"></a>
+                    </div>          
+                </div>
+            {% endfor %}
+            {% for video in videos %}
+                <div class="image_media">
+                    {{ video.urlMedia|raw }}
+                    <div class="edit_modify_delete">
+                        <a href="{{ path('app_figure_delete_media', {'slug': figure.slug, 'id': video.id }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vidéo ?')"><img class="modify_delete_img" src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer cette vidéo"></a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {{ form_errors(form) }}
+        <div id="figure_text" class="pageElement">
+            <div class="label_input">
+                {{ form_label(form.images, 'Ajouter des images') }}
                 <br>
-            {{ form_widget(form.images, {'row_attr': {'class': 'label_input'}}) }}
-                <br>
+                {{ form_widget(form.images, {'row_attr': {'class': 'label_input'}}) }}
+            </div>
+            <br>
             {{ form_row(form.embeds, {
                 label: 'Balises embed (une par ligne)',
-                'row_attr': {'class': 'label_input'}}) }}
-                <br>
+                'row_attr': {'class': 'label_input'}})
+            }}
+            <br>
             {{ form_row(form.description, {
                 label: 'Déscription',
                 'row_attr': {'class': 'label_input'}})
-                }}<br>
-            <div id="edit_form">
-                <div id="edit_form_groupe">
-                {{ form_row(form.groupe, {
-                    label: 'Groupe de la figure',
-                    'row_attr': {'class': 'label_input'}})
-                    }}
-                </div>
-                <div id="edit_form_validation">
-                    <button class="btn delete" href="{{ path('app_figure_delete', {'slug': figure.slug }) }}">Supprimer la figure</button>
-                    <button type="submit" class="btn">Modifier la figure</button>
-                </div>
-            </div>
-            <div id="cancel"><a href="{{ path('app_figure_details', {'slug': figure.slug}) }}">Annuler la modification</a></div>
+            }}
+            <br>
+            {{ form_row(form.groupe, {
+                label: 'Groupe de la figure',
+                'row_attr': {'class': 'select_option'}})
+            }}
         </div>
-
-        {{ form_end(form) }}
     
+    </section>
+    <section id="validFormSection"><br>
+        <div id="edit_form_validation">
+            <button class="btn delete" href="{{ path('app_figure_delete', {'slug': figure.slug }) }}">Supprimer la figure</button>
+            <button type="submit" class="btn">Modifier la figure</button>
+                {{ form_end(form) }}
+        </div><br>
+        <div id="cancel">
+            <a href="{{ path('app_figure_details', {'slug': figure.slug}) }}">Annuler la modification</a>
+        </div>
+    </section>
 </div>
 {% endblock %}

@@ -1,21 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
-
 {% block main %}
 
-    <section id="home_accroche">
-        <h1>Bienvenue !</h1>
-        <p>"Plongez dans l'univers enneigé du snowboard avec notre communauté passionnée !<br>
+    <section id="wellcome">
+        <h1 class="opacityBackground">Bienvenue !</h1>
+        <p class="opacityBackground">"Plongez dans l'univers enneigé du snowboard avec notre communauté passionnée !<br>
         Découvrez, partagez et échangez sur les figures emblématiques du snowboard, enrichissant ainsi votre expérience glisse comme jamais auparavant.<br>
         Rejoignez-nous pour explorer les pentes, apprendre de nouvelles astuces et connecter avec d'autres riders enthousiastes !"</p>
-        <a class="arrow_link" href="{{ path('app_home') }}#tricks_list"><img class="arrow" src="/images/arrow_bot.png" alt="Logo flèche vers le bas" title="Aller vers la liste des figures"></img></a>
+        <div class="arrow_link"><a href="{{ path('app_home') }}#tricksList"><img class="arrow" src="/images/arrow_bot.png" alt="Logo flèche vers le bas" title="Aller vers la liste des figures"></img></a></div>
     </section>
 
-    <section id="tricks_list">
+    <section id="tricksList">
         {% include "figure/figures_list.html.twig" %}
         <br>
-        <a class="arrow_link" href="{{ path('app_home') }}"><img class="arrow" src="/images/arrow_top.png" alt="Logo flèche vers le haut" title="Aller vers l'accueil"></img></a>
+        <div class="arrow_link"><a href="{{ path('app_home') }}"><img class="arrow" src="/images/arrow_top.png" alt="Logo flèche vers le haut" title="Aller vers l'accueil"></img></a></div>
     </section>
 
 {% endblock %}

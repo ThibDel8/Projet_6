@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,16 +33,7 @@ class FigureController extends AbstractController
             $this->processImages($figure, $form->get('images')->getData());
 
             $user = $security->getUser();
-            $nom = $form->get('nom')->getData();
-            $description = $form->get('description')->getData();
-            $groupe = $form->get('groupe')->getData();
-
-
             $figure->setUser($user);
-            $figure->setNom($nom);
-            $figure->setDescription($description);
-            $figure->setGroupe($groupe);
-
 
             $entityManager->persist($figure);
             $entityManager->flush();
@@ -70,6 +62,8 @@ class FigureController extends AbstractController
 
     private function processImages(Figure $figure, ?array $mediaFiles = []): void
     {
+        $firstImage = true;
+
         foreach ($mediaFiles as $mediaFile) {
             $newFileName = uniqid() . '.' . $mediaFile->guessExtension();
 
@@ -79,6 +73,12 @@ class FigureController extends AbstractController
                 $media = new Media();
                 $media->setUrlMedia($newFileName);
                 $media->setType('image');
+
+                if ($firstImage) {
+                    $media->setByDefault(true);
+                    $firstImage = false;
+                }
+
                 $figure->addMedia($media);
             } catch (FileException $e) {
             }
@@ -135,18 +135,6 @@ class FigureController extends AbstractController
             $this->processVideos($figure, $form->get('embeds')?->getData());
             $this->processImages($figure, $form->get('images')?->getData());
 
-
-            $user = $security->getUser();
-            $nom = $form->get('nom')->getData();
-            $description = $form->get('description')->getData();
-            $groupe = $form->get('groupe')->getData();
-
-
-            $figure->setUser($user);
-            $figure->setNom($nom);
-            $figure->setDescription($description);
-            $figure->setGroupe($groupe);
-
             $now = new DateTime('now');
             $figure->setDateMaj($now);
 
@@ -169,11 +157,26 @@ class FigureController extends AbstractController
     #[Route('/figure/{slug}/delete', name: 'app_figure_delete', requirements: ['slug' => '[aA0-zZ9\-]+'])]
     public function delete(Figure $figure, EntityManagerInterface $entityManager): Response
     {
+
+        $this->deleteAllPicturesAssocied($figure);
+
         $entityManager->remove($figure);
         $entityManager->flush();
 
         $this->addFlash('success', 'La figure a été suprimée avec succès !');
         return $this->redirectToRoute('app_home');
+    }
+
+    public function deleteAllPicturesAssocied(Figure $figure)
+    {
+        $images = $figure->getMedias()->filter(fn (Media $media) => $media->getType() === 'image')->toArray();
+
+        $filesystem = new Filesystem();
+
+        foreach ($images as $image) {
+            $imagePath = 'medias/' . $image->getUrlMedia();
+            $filesystem->remove($imagePath);
+        }
     }
 
     #[Route('/figure/{slug}/media/{id}/delete', name: 'app_figure_delete_media', requirements: ['id' => '\d+', 'slug' => '[aA0-zZ9\-]+'])]
@@ -197,5 +200,20 @@ class FigureController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('app_figure_edit', ['slug' => $figure->getSlug()]);
+    }
+
+    #[Route('/figure/{slug}/cover/delete', name: 'app_figure_delete_cover', requirements: ['slug' => '[aA0-zZ9\-]+'])]
+    public function deleteCover(string $slug, Figure $figure, EntityManagerInterface $entityManager): Response
+    {
+        $medias = $figure->getMedias()->toArray();
+
+        foreach ($medias as $media) {
+            $media->setByDefault(false);
+        }
+
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_figure_edit', ['slug' => $slug]);
     }
 }

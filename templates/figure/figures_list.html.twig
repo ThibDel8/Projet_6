@@ -9,41 +9,24 @@
 {% endif %}
 
 {% for figure in figures %}
-    {% if imagesByFigure[figure.id] is defined %}
-        {% set image = imagesByFigure[figure.id] %}
-        <div class="trick">
-            <div class="image_container">
-                <img src="/medias/{{ image.urlMedia }}" title="{{ figure.groupe }}">
-            </div>
-            <div class="read_trick">
-                <a href="{{ path('app_figure_details', {'slug': figure.slug } ) }}" title="Voir la page">
-                    <h2>{{ figure.nom }}</h2>
-                </a>
-                {% if app.user %}
-                <div class="modify_delete">
-                    <a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a>
-                    <a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a>
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    {% else %}
-        <!-- Si aucune image n'est associée à la figure, affichez l'image par défaut -->
-        <div class="trick">
-            <div class="image_container">
+    <div class="trick">
+        <div class="image_container">
+            {% if imagesByFigure[figure.id] is defined %}
+                <img src="/medias/{{ imagesByFigure[figure.id] }}" alt="Image de la figure" title="{{ figure.groupe }}">
+            {% else %}
                 <img src="/images/home_img.jpg" alt="Image par défaut" title="{{ figure.groupe }}">
-            </div>
-            <div class="read_trick">
-                <a href="{{ path('app_figure_details', {'slug': figure.slug } ) }}" title="Voir la page">
-                    <h2>{{ figure.nom }}</h2>
-                </a>
-                {% if app.user %}
+            {% endif %}
+        </div>
+        <div class="read_trick">
+            <a href="{{ path('app_figure_details', {'slug': figure.slug } ) }}" title="Voir la page">
+                <h2>{{ figure.nom }}</h2>
+            </a>
+            {% if app.user %}
                 <div class="modify_delete">
                     <a href="{{ path('app_figure_edit', {'slug': figure.slug }) }}"><img src="/images/pencil.png" alt="Logo d'un crayon" title="Modifier la figure"></a>
                     <a href="{{ path('app_figure_delete', {'slug': figure.slug }) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette figure ?')"><img src="/images/trash.png" alt="Logo d'une corbeille" title="Supprimer la figure"></a>
                 </div>
-                {% endif %}
-            </div>
+            {% endif %}
         </div>
-    {% endif %}
+    </div>
 {% endfor %}

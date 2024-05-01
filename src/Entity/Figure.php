@@ -48,9 +48,6 @@ class Figure
     #[ORM\Column(length: 255, unique: true)]
     private ?string $slug = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $urlImageCover = null;
-
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
@@ -204,18 +201,6 @@ class Figure
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
-
-        return $this;
-    }
-
-    public function getUrlImageCover(): ?string
-    {
-        return $this->urlImageCover;
-    }
-
-    public function setUrlImageCover(?string $urlImageCover): static
-    {
-        $this->urlImageCover = $urlImageCover;
 
         return $this;
     }

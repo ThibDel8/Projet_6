@@ -3,9 +3,12 @@
 {% block title %}Inscription{% endblock %}
 
 {% block main %}
-    <div id="registration">
 
-        <h1>Je crée mon compte</h1>
+    <h1 class="pc">Je crée mon compte</h1>
+
+    <div id="authPanel">
+
+        <h1 class="mobile">Je crée mon compte</h1>
 
         {{ form_errors(registrationForm) }}
 
@@ -31,7 +34,8 @@
                 label: 'J\'accepte les termes'})
                 }}<br>
 
-            <button type="submit" class="btn">Créer mon compte</button>
+            <button type="submit" class="btn">Créer mon compte</button><br>
+        <a class="login_link" href="{{ path('app_login') }}">J'ai déjà un compte, me connecter</a>
 
         {{ form_end(registrationForm) }}
 
