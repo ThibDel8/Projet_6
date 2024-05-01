@@ -168,7 +168,7 @@ class FigureController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
-    public function deleteAllPicturesAssocied(Figure $figure)
+    public function deleteAllPicturesAssocied(Figure $figure): void
     {
         $images = $figure->getMedias()->filter(fn (Media $media) => $media->getType() === 'image')->toArray();
 
