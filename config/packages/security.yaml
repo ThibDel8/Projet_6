@@ -8,7 +8,7 @@ security:
         app_user_provider:
             entity:
                 class: App\Entity\User
-                property: email
+                property: username
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -37,7 +37,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profil, roles: ROLE_USER }
         - { path: ^/create_figure, roles: ROLE_USER }
-        - { path: ^/figure/[0-9]+/comment, roles: ROLE_USER }
+        - { path: ^/figure/[aA0-zZ9\-]+/comment, roles: ROLE_USER }
         - { path: ^/figure/[aA0-zZ9\-]+/edit, roles: ROLE_USER }
         - { path: ^/figure/[aA0-zZ9\-]+/delete, roles: ROLE_USER }
         - { path: ^/figure/[aA0-zZ9\-]+/media/[0-9]+/delete, roles: ROLE_USER }

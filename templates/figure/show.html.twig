@@ -26,8 +26,22 @@
                 <h1>{{ figure.nom }}</h1>
             </div>
         </div>
-        <div class="mobile showMedias pageElement"><button>Afficher les médias</button></div>
-        <div id="figure_medias" class="pageElement">
+        <div class="mobile">
+            <div class="showMedias pageElement">
+                <button onclick="showMedias()">Afficher les médias</button>
+            </div>
+            <div class="hideMedias pageElement" style="display: none;">
+                <button onclick="hideMedias()">Cacher les médias</button>
+                <div id="hiddenMedias">
+                    {% for image in images %}
+                        <img class="image_media_file" src="{{ asset('medias/'~image.urlMedia) }}">
+                    {% endfor %}
+                    {% for video in videos %}
+                        {{ video.urlMedia|embed }}
+                    {% endfor %}</div>
+            </div>
+        </div>
+        <div id="figure_medias" class="pc pageElement">
             {% for image in images %}
             <div class="image_media">
                 <img class="image_media_file" src="{{ asset('medias/'~image.urlMedia) }}">
@@ -99,4 +113,20 @@
 
     </section>
 </div>
+<script>
+    function showMedias(){
+        var divToShow = document.querySelector('.hideMedias');
+        var divToHide = document.querySelector('.showMedias');
+
+        divToHide.style.display = 'none';
+        divToShow.style.display = 'flex';
+    }
+    function hideMedias(){
+        var divToShow = document.querySelector('.showMedias');
+        var divToHide = document.querySelector('.hideMedias');
+
+        divToHide.style.display = 'none';
+        divToShow.style.display = 'flex';
+    }
+</script>
 {% endblock %}
