@@ -87,7 +87,7 @@
         {% if comments is not empty %}
             {% for comment in comments %}
                 <div class="comment }}">
-                    <img src="/profil/{{ comment.user.urlPhotoProfil }}">
+                    <div class="userImage"><img src="/profil/{{ comment.user.urlPhotoProfil }}"></div>
                     <div class="commentaire">
                         <div class="commentaire_message">{{ comment.commentaire }}</div>
                         <div class="commentaire_infos">
@@ -100,10 +100,10 @@
             <br>
             <div id="pagination">
             {% if page > 1 %}
-                        <a class="btn" href="{{ path('app_figure_details', {'slug': figure.slug, page: page - 1 }) }}">Précedents</a>
+                        <a class="btn" href="{{ path('app_figure_details', {'slug': figure.slug, page: page - 1 }) }}#commentSection">Précedents</a>
             {% endif %}
             {% if page < maxPage %}
-                        <a class="btn suivant" href="{{ path('app_figure_details', {'slug': figure.slug, page: page + 1 }) }}">Suivants</a>
+                        <a class="btn suivant" href="{{ path('app_figure_details', {'slug': figure.slug, page: page + 1 }) }}#commentSection">Suivants</a>
             {% endif %}
             </div>
         {% else %}
